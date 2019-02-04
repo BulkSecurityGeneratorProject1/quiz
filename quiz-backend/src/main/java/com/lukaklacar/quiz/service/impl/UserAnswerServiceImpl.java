@@ -3,6 +3,7 @@ package com.lukaklacar.quiz.service.impl;
 import com.lukaklacar.quiz.service.UserAnswerService;
 import com.lukaklacar.quiz.domain.UserAnswer;
 import com.lukaklacar.quiz.repository.UserAnswerRepository;
+import com.lukaklacar.quiz.service.UserService;
 import com.lukaklacar.quiz.service.dto.UserAnswerDTO;
 import com.lukaklacar.quiz.service.mapper.UserAnswerMapper;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +31,12 @@ public class UserAnswerServiceImpl implements UserAnswerService {
 
     private final UserAnswerMapper userAnswerMapper;
 
-    public UserAnswerServiceImpl(UserAnswerRepository userAnswerRepository, UserAnswerMapper userAnswerMapper) {
+    private final UserService userService;
+
+    public UserAnswerServiceImpl(UserAnswerRepository userAnswerRepository, UserAnswerMapper userAnswerMapper, UserService userService) {
         this.userAnswerRepository = userAnswerRepository;
         this.userAnswerMapper = userAnswerMapper;
+        this.userService = userService;
     }
 
     /**
@@ -44,6 +49,7 @@ public class UserAnswerServiceImpl implements UserAnswerService {
     public UserAnswerDTO save(UserAnswerDTO userAnswerDTO) {
         log.debug("Request to save UserAnswer : {}", userAnswerDTO);
         UserAnswer userAnswer = userAnswerMapper.toEntity(userAnswerDTO);
+        userAnswer.setUser(userService.getUserWithAuthorities().orElseThrow(RuntimeException::new));
         userAnswer = userAnswerRepository.save(userAnswer);
         return userAnswerMapper.toDto(userAnswer);
     }
@@ -57,7 +63,7 @@ public class UserAnswerServiceImpl implements UserAnswerService {
     @Transactional(readOnly = true)
     public List<UserAnswerDTO> findAll() {
         log.debug("Request to get all UserAnswers");
-        return userAnswerRepository.findAll().stream()
+        return userAnswerRepository.findByUserIsCurrentUser().stream()
             .map(userAnswerMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }
@@ -84,6 +90,7 @@ public class UserAnswerServiceImpl implements UserAnswerService {
      */
     @Override
     public void delete(Long id) {
-        log.debug("Request to delete UserAnswer : {}", id);        userAnswerRepository.deleteById(id);
+        log.debug("Request to delete UserAnswer : {}", id);
+        userAnswerRepository.deleteById(id);
     }
 }

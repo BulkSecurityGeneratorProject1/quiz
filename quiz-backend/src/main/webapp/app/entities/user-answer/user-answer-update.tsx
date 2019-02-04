@@ -127,19 +127,6 @@ export class UserAnswerUpdate extends React.Component<IUserAnswerUpdateProps, IU
                       : null}
                   </AvInput>
                 </AvGroup>
-                <AvGroup>
-                  <Label for="user.id">User</Label>
-                  <AvInput id="user-answer-user" type="select" className="form-control" name="userId">
-                    <option value="" key="0" />
-                    {users
-                      ? users.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.id}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
-                </AvGroup>
                 <Button tag={Link} id="cancel-save" to="/entity/user-answer" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;
