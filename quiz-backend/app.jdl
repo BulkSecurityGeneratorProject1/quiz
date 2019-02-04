@@ -1,0 +1,44 @@
+enum QuestionType {
+	TEXT,
+    IMAGE,
+    VIDEO
+}
+
+enum AnswerType {
+	SINGLE,
+    MULTIPLE,
+    TEXT
+}
+
+entity Question {
+	questionType QuestionType required
+    answerType AnswerType required
+    text String required minlength(5)
+    image ImageBlob
+}
+
+entity UserAnswer {
+	
+}
+
+entity PossibleAnswer {
+	text String required minlength(3)
+    correct Boolean required
+}
+
+relationship OneToMany {
+	Question{answers} to PossibleAnswer{question}
+}
+
+relationship ManyToOne {
+    UserAnswer{user} to User
+}
+
+relationship OneToOne {
+	UserAnswer{question} to Question
+    UserAnswer{answer} to PossibleAnswer
+}
+
+service * with serviceImpl
+dto * with mapstruct
+
