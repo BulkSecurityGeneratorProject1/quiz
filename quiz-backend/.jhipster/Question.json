@@ -1,0 +1,52 @@
+{
+    "name": "Question",
+    "fields": [
+        {
+            "fieldName": "questionType",
+            "fieldType": "QuestionType",
+            "fieldValues": "TEXT,IMAGE,VIDEO",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "answerType",
+            "fieldType": "AnswerType",
+            "fieldValues": "SINGLE,MULTIPLE,TEXT",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "text",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength"
+            ],
+            "fieldValidateRulesMinlength": 5
+        },
+        {
+            "fieldName": "image",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "image"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "answers",
+            "otherEntityName": "possibleAnswer",
+            "otherEntityRelationshipName": "question"
+        }
+    ],
+    "changelogDate": "20190204145244",
+    "entityTableName": "question",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
